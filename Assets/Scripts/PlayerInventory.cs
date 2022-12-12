@@ -18,15 +18,20 @@ public class PlayerInventory : MonoBehaviour
 
     private void Update()
     {
+
+    }
+
+    private void UpdateText()
+    {
         string newText = "";
         foreach (var item in inventory)
         {
-            newText += item.Key + " : " + item.Value + "\n";
+            newText += "    : " + item.Value + "\n";
         }
         textUi.text = newText;
     }
 
-    private void setCollectibleNames()
+    private void SetCollectibleNames()
     {
         collectibleNames.Add("Banana");
         inventory.Add("Banana", 0);
@@ -40,10 +45,11 @@ public class PlayerInventory : MonoBehaviour
             inventory.Add(collectible, 0);
         }
         inventory[collectible]++;
-        printCollectibles();
+        PrintCollectibles();
+        UpdateText();
     }
 
-    private void printCollectibles()
+    private void PrintCollectibles()
     {
         string result = "";
 
