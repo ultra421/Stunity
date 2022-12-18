@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class PlayerHP : MonoBehaviour
@@ -53,6 +54,7 @@ public class PlayerHP : MonoBehaviour
         if (playerHP == 0)
         {
             Debug.Log("Ded, not big soup rise");
+            SceneManager.LoadScene("deathScreen");
             Destroy(this.gameObject);
         }
     }
