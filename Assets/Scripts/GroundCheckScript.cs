@@ -21,6 +21,7 @@ public class GroundCheckScript : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
+        Debug.Log("Collided with " + collision.gameObject);
         if (collision.gameObject.CompareTag("Ground"))
         {
             IsTouchingGround = true;
@@ -34,4 +35,5 @@ public class GroundCheckScript : MonoBehaviour
             IsTouchingGround = false;
         }
     }
+
 }

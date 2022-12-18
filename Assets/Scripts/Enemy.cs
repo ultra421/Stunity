@@ -24,6 +24,7 @@ public class Enemy : MonoBehaviour
                 laserDirection = "right";
                 break;
         }
+        fireFrequency = Random.Range(fireFrequency - 1, fireFrequency + 0.5f);
     }
 
     // Update is called once per frame
@@ -87,6 +88,17 @@ public class Enemy : MonoBehaviour
             newReward.transform.position = new Vector2(this.transform.position.x, this.transform.position.y + 0.5f); //Set pos Where enemy died
             newReward.transform.parent = bananaManager.transform; //Set bananaManager as parent
             Destroy(gameObject);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Gaming4 playerScript = collision.gameObject.transform.parent.GetComponent<Gaming4>();
+            playerScript.StompedEnemy();
+            timeAlive = 7; //Change this
+            CheckDeath();
         }
     }
 }

@@ -12,6 +12,9 @@ public class Gaming4 : MonoBehaviour
     int jumps;
     [SerializeField] int downForce;
     float timeSinceJumpInput, airTime, maxAirtime;
+    [SerializeField] Animator animator;
+    bool stompedEnemy;
+    [SerializeField]AudioSource stomp;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +34,7 @@ public class Gaming4 : MonoBehaviour
         isGround = false;
         isTouchingWall = false;
         airTime = 0;
+        stompedEnemy = false;
     }
 
     // Update is called once per frame
@@ -126,22 +130,30 @@ public class Gaming4 : MonoBehaviour
 
     private void CheckGround()
     {
-        //Start ray below player
+        //Start ray below player, to their left and right
         Vector2 pos = rb.position;
         BoxCollider2D bc2 = GetComponent<BoxCollider2D>();
-        float rayDistance = 0.1f;
-        Vector2 rayStart = new Vector2(pos.x, pos.y - bc2.bounds.extents.y - 0.01f);
+        Vector2 rayStart1 = new Vector2(bc2.bounds.center.x-bc2.bounds.extents.x, bc2.bounds.center.y - bc2.bounds.extents.y); //left
+        Vector2 rayStart2 = new Vector2(bc2.bounds.center.x+bc2.bounds.extents.x, bc2.bounds.center.y - bc2.bounds.extents.y); //right
+        RaycastHit2D hit1 = Physics2D.Raycast(rayStart1, Vector2.down, 0.15f); //left
+        RaycastHit2D hit2 = Physics2D.Raycast(rayStart2, Vector2.down, 0.15f); //Right
+        Debug.DrawRay(rayStart1, new Vector2(0, -0.15f), Color.red);
+        Debug.DrawRay(rayStart2, new Vector2(0, -0.15f), Color.red);
 
-        RaycastHit2D hit = Physics2D.Raycast(rayStart, Vector2.down, rayDistance);
-        Debug.DrawRay(rayStart, new Vector2(0, -rayDistance), Color.red);
-
-        if (hit.collider == null)
+        if (hit1.collider == null && hit2.collider == null)
         {
             isGround = false;
             return;
         }
 
-        GameObject collided = hit.transform.gameObject;
+        GameObject collided = null;
+        if (hit1.collider != null)
+        {
+            collided = hit1.transform.gameObject;
+        } else if (hit2.collider != null) {
+            collided = hit2.transform.gameObject;
+        }
+
         //if collided contains compositie collider then it's the tilemap
         if (collided.GetComponent<CompositeCollider2D>() != null)
         {
@@ -162,9 +174,14 @@ public class Gaming4 : MonoBehaviour
 
     private void FinalChecks()
     {
-        //Assign modified vel to rb
-        //Debug.Log("Initial vel = " + rb.velocity + " result: " + vel);
+        if (stompedEnemy)
+        {
+            vel.y = 0;
+            rb.AddForce(jumpSpeed);
+            stompedEnemy = false;
+        }
         rb.velocity = vel;
+        SetAnimatiorVars();
     }
     
     //Additional force applied depends on if holding jump or not
@@ -259,6 +276,22 @@ public class Gaming4 : MonoBehaviour
         }
     }
 
+    private void SetAnimatiorVars()
+    {
+        animator.SetFloat("SpeedX", vel.x);
+        animator.SetFloat("SpeedY", vel.y);
+        animator.SetBool("isGround", isGround);
+        animator.SetInteger("jumps", jumps);
+        //Flip sprite
+        if (vel.x < 0)
+        {
+            gameObject.transform.localScale = new Vector3(-3, 3, 1); //flip to the left
+        } else if (vel.x > 0)
+        {
+            gameObject.transform.localScale = new Vector3(3, 3, 1); //flip to the right
+        }
+    }
+
     private void OnCollisionStay2D(Collision2D collision)
     {
         DrawContacts(collision);
@@ -271,4 +304,11 @@ public class Gaming4 : MonoBehaviour
             Debug.DrawLine(this.rb.transform.position, hit.point, Color.red);
         }
     }
+
+    public void StompedEnemy ()
+    {
+        stomp.Play();
+        stompedEnemy = true;
+    }
+
 }

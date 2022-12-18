@@ -9,10 +9,14 @@ public class PlayerHP : MonoBehaviour
 
     [SerializeField] public int playerHP, invulFrames, maxInvulTime;
     [SerializeField] TextMeshProUGUI textUI;
+    Animator animator;
+    float timeSinceHit;
+    bool gotHit;
     // Start is called before the first frame update
     void Start()
     {
-        
+       animator = GetComponent<Animator>();
+        gotHit = false;
     }
 
     // Update is called once per frame
@@ -25,6 +29,7 @@ public class PlayerHP : MonoBehaviour
     {
         SumInvulFrame();
         CheckHP();
+        hitAnim();
     }
 
     public bool HitByDamage(int damage)
@@ -37,6 +42,8 @@ public class PlayerHP : MonoBehaviour
             invulFrames = 1;
             Debug.Log("InvulFrame = " + invulFrames);
             playerHP -= damage;
+            animator.SetBool("gotHit", true);
+            gotHit = true;
             return true;
         }
     }
@@ -71,6 +78,21 @@ public class PlayerHP : MonoBehaviour
         if (invulFrames < maxInvulTime)
         {
             invulFrames++;
+        }
+    }
+
+    private void hitAnim()
+    {
+        if (gotHit)
+        {
+            timeSinceHit += Time.deltaTime;
+        }
+
+        if (timeSinceHit > 1)
+        {
+            timeSinceHit = 0;
+            gotHit = false;
+            animator.SetBool("gotHit", gotHit);
         }
     }
 

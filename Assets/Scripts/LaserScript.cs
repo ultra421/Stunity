@@ -7,6 +7,7 @@ public class LaserScript : MonoBehaviour
 
     Rigidbody2D rb;
     [SerializeField] int laserVel;
+    [SerializeField] AudioSource laserSound;
     // Start is called before the first frame update
     void Start()
     {
@@ -41,6 +42,9 @@ public class LaserScript : MonoBehaviour
             velocity = new Vector2(-laserVel, 0);
         }
         rb.velocity = velocity;
+        Debug.Log("New laser velocity is = " + rb.velocity);
+        Start();
+        laserSound.Play();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

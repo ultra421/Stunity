@@ -10,6 +10,8 @@ public class GameManagerScript : MonoBehaviour
     [SerializeField] float maxSpawnTime, minSpawnTime;
     [SerializeField] private float spawnTime,nextSpawnTime;
     [SerializeField] TextMeshProUGUI gameOverText;
+    bool[] occupiedPoints;
+    float timeSinceLastPointReset;
 
     // Start is called before the first frame update
     void Start()
@@ -17,6 +19,7 @@ public class GameManagerScript : MonoBehaviour
         spawnTime = 0;
         nextSpawnTime = RandomTime();
         gameOverText.gameObject.SetActive(false);
+        occupiedPoints = new bool[spawnPoints.transform.childCount];
     }
 
     // Update is called once per frame
@@ -29,6 +32,8 @@ public class GameManagerScript : MonoBehaviour
     {
         SumTime();
         CheckTime();
+        resetPoints();
+        //CheckGameOver();
     }
 
     private void SumTime()
@@ -53,13 +58,27 @@ public class GameManagerScript : MonoBehaviour
     {
         int spawnPointCount = spawnPoints.transform.childCount;
         Debug.Log("Found points = " + spawnPointCount);
-        int randomChild = Random.Range(0, spawnPointCount - 1);
+
+        int randomChild = 0;
+        while (true)
+        {
+            randomChild = Random.Range(0, spawnPointCount - 1);
+            if (occupiedPoints[randomChild])
+            {
+                continue;
+            } else
+            {
+                break;
+            }
+        }
+        Debug.Log("Using point = " + randomChild);
         Vector2 spawnPos = spawnPoints.transform.GetChild(randomChild).transform.position; //Get pos of spawnpoint
         //Create enemy
         GameObject spawnedEnemy = Instantiate(enemy);
         //Set pos
         spawnedEnemy.transform.position = spawnPos;
-
+        spawnedEnemy.transform.SetParent(this.gameObject.transform);
+        occupiedPoints[randomChild] = true;
     }
 
     //Generates random time between min and max
@@ -75,7 +94,23 @@ public class GameManagerScript : MonoBehaviour
         if (hp.playerHP == 0)
         {
             gameOverText.text = "Has conseguido " + inventory.getQuantity("banana") + " bananas";
+            gameOverText.gameObject.SetActive(true);
             this.gameObject.SetActive(false);
+            Destroy(this.gameObject);
         }
     }
+
+    private void resetPoints()
+    {
+        timeSinceLastPointReset += Time.deltaTime;
+        if (timeSinceLastPointReset > 20) //reset the points
+        {
+            for (int i = 0; i < occupiedPoints.Length; i++)
+            {
+                occupiedPoints[i] = false;
+            }
+            timeSinceLastPointReset = 0;
+        }
+    }
+
 }
