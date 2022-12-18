@@ -1,19 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 public class GameManagerScript : MonoBehaviour
 {
 
-    [SerializeField] GameObject enemy;
-    [SerializeField] GameObject spawnPoints;
+    [SerializeField] GameObject enemy, spawnPoints, player;
     [SerializeField] float maxSpawnTime, minSpawnTime;
     [SerializeField] private float spawnTime,nextSpawnTime;
+    [SerializeField] TextMeshProUGUI gameOverText;
 
     // Start is called before the first frame update
     void Start()
     {
         spawnTime = 0;
         nextSpawnTime = RandomTime();
+        gameOverText.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -63,5 +66,17 @@ public class GameManagerScript : MonoBehaviour
     private float RandomTime()
     {
         return Random.Range(minSpawnTime, maxSpawnTime);
+    }
+
+    private void CheckGameOver()
+    {
+        PlayerHP hp = player.GetComponent<PlayerHP>();
+        PlayerInventory inventory = player.GetComponent<PlayerInventory>();
+        if (hp.playerHP == 0)
+        {
+            gameOverText.text = "Has conseguido " + inventory.getQuantity("banana") + " bananas";
+            Destroy(player);
+            this.gameObject.SetActive(false);
+        }
     }
 }

@@ -65,4 +65,9 @@ public class PlayerInventory : MonoBehaviour
     {
         return inventory;
     }
+
+    public int getQuantity(string input)
+    {
+        return inventory["input"];
+    }
 }

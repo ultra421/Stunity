@@ -102,7 +102,7 @@ MonoBehaviour:
   weapon: {fileID: 6263741787154182854, guid: d5411ec161e5d3e4da6690e02c14642d, type: 3}
   reward: {fileID: 3674737439020214466, guid: 320e71afd820d124081b460aeafb2767, type: 3}
   bananaManager: {fileID: 0}
-  fireFrequency: 3
+  fireFrequency: 1.9
 --- !u!50 &459528669315165193
 Rigidbody2D:
   serializedVersion: 4

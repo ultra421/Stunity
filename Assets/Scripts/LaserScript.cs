@@ -11,9 +11,10 @@ public class LaserScript : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        GameObject tileMap = GameObject.Find("mainTileMap");
+        GameObject tileMap = GameObject.Find("mainTilemap");
+        CompositeCollider2D compCollider = tileMap.GetComponent<CompositeCollider2D>();
 
-        Physics2D.IgnoreCollision(GetComponent<BoxCollider2D>(), null);
+        Physics2D.IgnoreCollision(GetComponent<BoxCollider2D>(), compCollider);
     }
 
     // Update is called once per frame

@@ -7,7 +7,7 @@ public class PlayerHP : MonoBehaviour
 {
     //This script manages player's HP and their invulnerability frames
 
-    [SerializeField] int playerHP, invulFrames, maxInvulTime;
+    [SerializeField] public int playerHP, invulFrames, maxInvulTime;
     [SerializeField] TextMeshProUGUI textUI;
     // Start is called before the first frame update
     void Start()
