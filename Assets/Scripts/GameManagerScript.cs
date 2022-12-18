@@ -75,7 +75,6 @@ public class GameManagerScript : MonoBehaviour
         if (hp.playerHP == 0)
         {
             gameOverText.text = "Has conseguido " + inventory.getQuantity("banana") + " bananas";
-            Destroy(player);
             this.gameObject.SetActive(false);
         }
     }
